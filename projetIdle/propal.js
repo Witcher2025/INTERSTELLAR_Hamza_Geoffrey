@@ -1,49 +1,41 @@
 const TICK_INTERVAL_MS = 100; // Constant: game loop interval in milliseconds (100ms = 10 ticks per second)
-const GAME_SITE_URL = "https://example.com"; // Constant: game website URL
+const GAME_SITE_URL = "https://example.com"; 
 
 // 2. GAME STATE
-
 const gameState = {
-  // Object containing all game state
   cosmicEnergy: 5000000,
 
   // Black hole life (in percentage and HP)
-  // Comment: black hole life in percentage and hit points
-  blackHolePercent: 100, // Property: black hole life percentage (100% = full life)
-  blackHoleHP: 200, // Property: current black hole hit points
-  blackHoleMaxHP: 200, // Property: maximum black hole hit points
-
+  blackHolePercent: 100, 
+  blackHoleHP: 200, 
+  blackHoleMaxHP: 200, 
   manualClickPower: 1, // Property: manual click power (can be increased with upgrades)
-  autoClicksPerSecond: 0, // Property: total automatic hero production (CPS = Clicks Per Second)
+  autoClicksPerSecond: 0, // Property: total automatic hero production ( Clicks Per Second)
 
   // Manual click statistics
-  // Comment: manual click statistics
-  manualClicksThisTick: 0, // Property: number of manual clicks performed during this tick (100ms)
-  manualClicksPerSecond: 0, // Property: number of manual clicks per second (calculated on average)
-  manualClicksBuffer: [], // Property: buffer array to store click history (to calculate average)
-
+  manualClicksThisTick: 0, 
+  manualClicksPerSecond: 0,
+  manualClicksBuffer: [],
   lastActivityTime: Date.now(), // Property: timestamp of last player activity (for black hole regeneration)
-  lastOnlineTime: Date.now(), // Property: timestamp of last time player was online
-  totalPlayTime: 0, // Property: total play time in seconds
-  gameWon: false, // Property: boolean indicating if player won the game (black hole at 0%)
-
+  lastOnlineTime: Date.now(), 
+  totalPlayTime: 0,
+  gameWon: false, 
+  
   // Black hole bonus phase states
-  // Comment: black hole bonus phase states
   bonusPhase1Active: false, // Property: phase 1 active (100% --> 70%, production bonus x1.5)
   bonusPhase2Active: false, // Property: phase 2 active (70% --> 40%, clicks bonus x100)
   bonusPhase3Active: false, // Property: phase 3 active (40% --> 0%, Thanos unlock)
-
   // Temporary bonuses for each hero
-  // Comment: temporary bonuses for each hero
   heroBonuses: {
+    
     // Object containing temporary bonuses for each hero
-    ROBIN: { active: false, endTime: 0 }, // Robin's bonus: active (true/false) and end time (timestamp)
-    BATMAN: { active: false, endTime: 0 }, // Batman's bonus: active (true/false) and end time (timestamp)
-    SPIDERMAN: { active: false, endTime: 0 }, // Spider-Man's bonus: active (true/false) and end time (timestamp)
-    IRONMAN: { active: false, endTime: 0 }, // Iron Man's bonus: active (true/false) and end time (timestamp)
-    BUMBLEBEE: { active: false, endTime: 0 }, // Bumblebee's bonus: active (true/false) and end time (timestamp)
-    OPTIMUS: { active: false, endTime: 0 }, // Optimus Prime's bonus: active (true/false) and end time (timestamp)
-    THANOS: { active: false, endTime: 0 }, // Thanos's bonus: active (true/false) and end time (timestamp)
+    ROBIN: { active: false, endTime: 0 }, // Robin's bonus: active 
+    BATMAN: { active: false, endTime: 0 }, // Batman's bonus: active 
+    SPIDERMAN: { active: false, endTime: 0 }, // Spider-Man's bonus: active 
+    IRONMAN: { active: false, endTime: 0 }, // Iron Man's bonus: active 
+    BUMBLEBEE: { active: false, endTime: 0 }, // Bumblebee's bonus: active 
+    OPTIMUS: { active: false, endTime: 0 }, // Optimus Prime's bonus: active 
+    THANOS: { active: false, endTime: 0 }, // Thanos's bonus: active 
   },
 };
 
@@ -69,12 +61,12 @@ const heroesConfig = {
   BATMAN: {
     id: "BATMAN",
     name: "Batman",
-    type: "booster", // Multiplies Robin's production
+    type: "booster",
     baseCost: 1500,
     costGrowth: 0.1,
-    targetHeroId: "ROBIN", // Hero whose production is boosted
-    baseMultiplier: 2, // Base multiplier
-    multiplierPerPurchase: 0.1, // Multiplier added per purchase
+    targetHeroId: "ROBIN", 
+    baseMultiplier: 2, 
+    multiplierPerPurchase: 0.1,
     bonusThreshold: 10,
     bonusMultiplier: 2,
     bonusDurationMs: 60_000,
@@ -135,10 +127,10 @@ const heroesConfig = {
   OPTIMUS: {
     id: "OPTIMUS",
     name: "Optimus Prime",
-    type: "booster", // Multiplies Bumblebee's production
+    type: "booster", 
     baseCost: 90_000,
     costGrowth: 0.2,
-    targetHeroId: "BUMBLEBEE", // Hero whose production is boosted
+    targetHeroId: "BUMBLEBEE", 
     baseMultiplier: 3,
     multiplierPerPurchase: 0.35,
     bonusThreshold: 3,
@@ -252,10 +244,9 @@ function formatTime(seconds) {
 /**
  * Applies click damage to the black hole
  * Calculates damage based on automatic production and applies phase bonuses
- * @param {Event} event - The click event (optional, for bonus phase 2)
  */
 function applyClickToBlackHole(event) {
-  let damagePerClick = gameState.autoClicksPerSecond; // Damage = total automatic production
+  let damagePerClick = gameState.autoClicksPerSecond; 
 
   if (gameState.bonusPhase2Active && event) {
     // Bonus 2: chaque clic ajoute 100 fois la production automatique (s'ajoute aux dégâts automatiques)
@@ -279,9 +270,9 @@ function applyClickToBlackHole(event) {
 function updateBlackHolePhases() {
   const p = gameState.blackHolePercent;
 
-  gameState.bonusPhase1Active = p < 100 && p > 70; // Phase 1: 100% --> 70% (production x 1.5)
-  gameState.bonusPhase2Active = p <= 70 && p > 40; // Phase 2: 70% --> 40% (manual clicks x 100)
-  gameState.bonusPhase3Active = p <= 40 && p >= 0; // Phase 3: 40% --> 0% (Thanos unlock)
+  gameState.bonusPhase1Active = p < 100 && p > 70; 
+  gameState.bonusPhase2Active = p <= 70 && p > 40; 
+  gameState.bonusPhase3Active = p <= 40 && p >= 0; 
 
   // Check for victory condition
   if (p <= 0 && !gameState.gameWon) {
@@ -347,7 +338,7 @@ function getHeroEffectiveCps(heroId) {
   const config = heroesConfig[heroId];
   const state = heroesState[heroId];
 
-  if (config.type !== "autoclick") return 0; // If it's a booster or not owned --> no production
+  if (config.type !== "autoclick") return 0; // If it's a booster or not owned 
   if (state.owned === 0) return 0;
 
   let cps = config.baseCps; // Base production
@@ -401,7 +392,6 @@ function calculateTotalAutoClicksPerSecond() {
 /**
  * Buys a hero from the shop
  * Deducts cosmic energy, increases owned count, updates cost, and activates bonus if threshold is reached
- * @param {string} heroId - The hero ID to buy
  */
 function buyHero(heroId) {
   const config = heroesConfig[heroId];
@@ -415,13 +405,12 @@ function buyHero(heroId) {
   }
 
   if (gameState.cosmicEnergy < state.cost) {
-    // Check: sufficient funds?
     return;
   }
 
-  gameState.cosmicEnergy -= state.cost; // Deduct cost
+  gameState.cosmicEnergy -= state.cost; 
   state.owned += 1; // Add hero
-  state.cost = Math.floor(state.cost * (1 + config.costGrowth)); // Increase cost for next purchase
+  state.cost = Math.floor(state.cost * (1 + config.costGrowth));
 
   if (state.owned === config.bonusThreshold) {
     // If bonus threshold reached --> automatic activation
@@ -435,7 +424,6 @@ function buyHero(heroId) {
 /**
  * Buys a hero's special item (from the popup)
  * Requires the hero to be owned at least once and sufficient cosmic energy
- * @param {string} heroId - The hero ID whose item to buy
  */
 function buyItem(heroId) {
   const config = heroesConfig[heroId];
@@ -462,14 +450,13 @@ function buyItem(heroId) {
 /**
  * Activates a hero's temporary bonus (60 seconds)
  * Sets the bonus multiplier and end time
- * @param {string} heroId - The hero ID to activate bonus for
  */
 function activateHeroTemporaryBonus(heroId) {
   const config = heroesConfig[heroId];
   const state = heroesState[heroId];
   const bonus = gameState.heroBonuses[heroId];
 
-  state.multiplierBonusActive = 1; // Complete reset
+  state.multiplierBonusActive = 1; 
   state.multiplierBonusActive = config.bonusMultiplier; // Apply new bonus
 
   bonus.active = true; // Record end time
@@ -524,7 +511,6 @@ function handlePlayerClick(event) {
 /**
  * Shows click explosion animation at click position
  * Uses different image based on whether a bonus is active
- * @param {Event} event - The click event
  */
 function showClickExplosion(event) {
   // Check if bonus is active
@@ -573,21 +559,20 @@ let gameLoopInterval = null; // Variable to store interval ID (allows stopping i
 /**
  * Starts the game loop
  * Runs every TICK_INTERVAL_MS milliseconds
- * Updates automatic production, manual click stats, hero bonuses, and UI
  */
 function startGameLoop() {
   gameLoopInterval = setInterval(() => {
     calculateTotalAutoClicksPerSecond(); // Calculate automatic hero production
 
     const autoClicksPerTick =
-      (gameState.autoClicksPerSecond * TICK_INTERVAL_MS) / 1000; // Convert CPS --> production per tick
+      (gameState.autoClicksPerSecond * TICK_INTERVAL_MS) / 1000; // Convert CPS 
 
     if (autoClicksPerTick > 0) {
       // Add passive production
       gameState.cosmicEnergy += autoClicksPerTick;
     }
 
-    // Update manual click statistics (average over 1 second)
+    // Update manual click statistics 
     gameState.manualClicksBuffer.push(gameState.manualClicksThisTick);
 
     const maxTicks = 1000 / TICK_INTERVAL_MS;
@@ -612,7 +597,7 @@ let heroRingContainer, heroListContainer, leftHeroesContainer, popupLayer;
 const heroButtons = {}; // Storage for hero buttons
 
 /**
- * Creates the entire hero interface (avatars, popups, cards)
+ * Creates the entire hero interface
  * Generates avatar elements for left panel, popup information windows, and shop cards for right panel
  */
 function createHeroInterface() {
@@ -1004,13 +989,13 @@ function updateHeroRing() {
 
   // Assign radius per hero (3 concentric circles)
   const heroRadius = {
-    ROBIN: 50, // Outer circle (furthest)
-    BATMAN: 50, // Outer circle
-    SPIDERMAN: 42, // Middle circle
-    IRONMAN: 42, // Middle circle
-    BUMBLEBEE: 34, // Inner circle (closest)
-    OPTIMUS: 34, // Inner circle
-    THANOS: 42, // Middle circle (default)
+    ROBIN: 50, 
+    BATMAN: 50,
+    SPIDERMAN: 42, 
+    IRONMAN: 42, 
+    BUMBLEBEE: 34,
+    OPTIMUS: 34, 
+    THANOS: 42, 
   };
 
   // Group icons by circle
@@ -1364,3 +1349,4 @@ document.addEventListener("DOMContentLoaded", () => {
     showHeroBonusesProgressively();
   }, 1000);
 });
+
